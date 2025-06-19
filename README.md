@@ -47,7 +47,7 @@ Getting Started
 
 Clone the repository:
 
-git clone https://github.com/yourusername/marssimnav.git
+git clone https://github.com/pushkar-hue/marssimnav.git
 cd marssimnav
 
 Install dependencies:
