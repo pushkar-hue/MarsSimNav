@@ -101,6 +101,7 @@ Future Work
 
 Authors
 
-    Pushkar Sharma (Author)
+    Pushkar Sharma (@pushkar-hue)
+    Ved Thorat (@i3hz)
 
     AI4Mars Dataset by NASA JPL and collaborators
