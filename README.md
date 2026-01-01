@@ -1,107 +1,109 @@
 
-MarsSimNav: Autonomous Terrain-Aware Rover Path Planning
-Overview
+# MarsSimNav: Autonomous Terrain-Aware Rover Path Planning
 
-MarsSimNav is a deep learning and path planning system built to simulate autonomous Mars rover navigation using real NASA imagery. It leverages a DeepLabV3+ segmentation model trained on the AI4Mars dataset to classify Martian terrain types, followed by A* search for optimal path planning over hazardous terrain.
-Features
+[![Python](https://img.shields.io/badge/Python-3.11-blue.svg)](https://www.python.org/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-DeepLabV3+-ee4c2c.svg)](https://pytorch.org/)
+[![NASA](https://img.shields.io/badge/Dataset-AI4Mars-red.svg)](https://deep-learning-on-mars.github.io/dataset/)
 
-    Semantic Segmentation with DeepLabV3+
+MarsSimNav is a deep learning and path planning system designed to simulate autonomous Mars rover navigation using real NASA imagery. It leverages a **DeepLabV3+** segmentation model trained on the **AI4Mars dataset** to classify Martian terrain types, followed by **A* search** to calculate optimal paths over hazardous terrain.
 
-    Custom PyTorch Dataset Pipeline for AI4Mars
+---
 
-    Terrain-Aware Path Planning using A* algorithm
+## Features
 
-    Terrain Cost Mapping: soil, bedrock, sand, and big rocks
+* **Semantic Segmentation:** Powered by DeepLabV3+ with a ResNet50 backbone.
+* **Custom Pipeline:** Specialized PyTorch Dataset handling for AI4Mars pixel-level annotations.
+* **Terrain-Aware Path Planning:** Implements the A* algorithm via NetworkX.
+* **Cost-Based Navigation:** Assigns navigation weights to different terrain types (soil, bedrock, sand, big rocks).
+* **Visualization:** Generates visual overlays of the predicted rover path on original Mars surface images.
+* **Scalable:** Supports subsetting for lightweight experimentation (e.g., 5,000 images).
 
-    Visual Overlay of predicted rover path on Mars images
+---
 
-    Efficient data handling for large datasets (supports subsetting)
+##  Dataset
 
-    Inference-ready model with reproducible outputs
+* **Source:** [AI4Mars Dataset](https://deep-learning-on-mars.github.io/dataset/) from NASA JPL.
+* **Imagery:** Over 18,000 images captured by the Curiosity rover (MSL).
+* **Labels:** Pixel-level annotations for:
+    * **Soil:** Safe for traverse.
+    * **Bedrock:** Stable but requires caution.
+    * **Sand:** High risk of entrapment.
+    * **Big Rocks:** Physical obstacles.
 
-Dataset
+---
 
-    Source: AI4Mars Dataset
+##  Technologies Used
 
-    Images: Over 18,000 images from the Curiosity rover (MSL)
+* **Core:** Python 3.11, PyTorch, Torchvision
+* **Algorithms:** DeepLabV3+, A* (NetworkX)
+* **Data & Visualization:** Matplotlib, PIL, NumPy
+* **Environment:** Google Colab / Linux
 
-    Labels: Pixel-level annotations for soil, bedrock, sand, and big rocks
+---
 
-    Preprocessing: Optionally subset to 5,000 images for lightweight experimentation
+## Getting Started
 
-Technologies Used
-
-    Python 3.11
-
-    PyTorch and Torchvision
-
-    DeepLabV3+ with ResNet50 backbone
-
-    NetworkX for path planning (A* algorithm)
-
-    Matplotlib and PIL for visualization
-
-    Google Colab for development and testing
-
-Getting Started
-
-Clone the repository:
-
-git clone https://github.com/pushkar-hue/marssimnav.git
+### 1. Clone the repository
+```bash
+git clone [https://github.com/pushkar-hue/marssimnav.git](https://github.com/pushkar-hue/marssimnav.git)
 cd marssimnav
+```
 
-Install dependencies:
-
+### 2. Install dependencies
+```bash
 pip install -r requirements.txt
+```
+### 3. Usage (Colab/Local)
 
-To run in Google Colab:
+- Ensure your trained model is available as `deeplabv3_mars.pth`.
 
-    Upload your trained model as deeplabv3_mars.pth
+- Place sample Mars images in `ai4mars-subset/images/`.
 
-    Place sample Mars images in ai4mars-subset/images/
+- Run the inference script or call the planning function:
 
-    Call plan_rover_path(image_path, model) to visualize paths
+## Path Planning Logic
 
-Path Planning Logic
+The system follows a 4-step pipeline to ensure safe navigation:
 
-    Predict segmentation mask for a Mars image using DeepLabV3+
+- **Inference:** Predict the segmentation mask using the DeepLabV3+ model.
 
-    Convert mask into a terrain cost map
+- **Mapping:** Convert the mask into a Terrain Cost Map based on class IDs.
 
-    Use A* search to compute the lowest-cost safe path
+- **Search:** Use A* to find the lowest-cost path from start to goal coordinates.
 
-    Visualize the path overlay on both the mask and the original image
+- **Overlay:** Project the computed path onto the original image for visualization.
 
-Terrain Classes and Costs
-Terrain	Class ID	Cost
-Soil	0	1
-Bedrock	1	4
-Sand	2	6
-Big Rock	3	10
+###  Terrain Cost
+Terrain,Class ID,Cost Weight,Risk Level
+Soil,0,1,Low
+Bedrock,1,4,Moderate
+Sand,2,6,High
+Big Rock,3,10,Obstacle
 
 Pixels with unknown labels (e.g. masked/NULL) are assigned high cost or skipped.
-Sample Results
+
+## Sample Results
 Input Image	Segmentation Mask	Planned Path Overlay
 mars_image.jpg	predicted_mask.png	planned_path_overlay.png
 ![WhatsApp Image 2025-06-19 at 22 18 53_f36541c7](https://github.com/user-attachments/assets/f114eeb2-7c70-4d8d-9735-c341a1f1f45a)
 ![WhatsApp Image 2025-06-19 at 22 18 53_0b331c52](https://github.com/user-attachments/assets/c9cc27d9-fb8a-42af-9c3c-609780ea976f)
 ![WhatsApp Image 2025-06-19 at 22 18 53_cec2d284](https://github.com/user-attachments/assets/a2530933-939d-421f-b085-8443c5dd9427)
 
-Future Work
+## Future Work
 
-    Add support for D* Lite and real-time replanning
+- Add support for D* Lite and real-time replanning
 
-    Interactive terrain selection and goal input via UI
+- Interactive terrain selection and goal input via UI
 
-    Animated simulation of rover motion along the path
+- Animated simulation of rover motion along the path
 
-    Deployable web dashboard using Streamlit or Gradio
+- Deployable web dashboard using Streamlit or Gradio
 
-    Integration with planetary data system (PDS) metadata
+- Integration with planetary data system (PDS) metadata
 
 Authors
 
-    Pushkar Sharma (@pushkar-hue)
-    Ved Thorat (@i3hz)
+- **Pushkar Sharma** (@pushkar-hue)
+- **Ved Thorat** (@i3hz)
 
-    AI4Mars Dataset by NASA JPL and collaborators
+*Special thanks to NASA JPL for providing the AI4Mars Dataset.*
